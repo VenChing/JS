@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>三级联动</title>
+</head>
+<body>
+	<form>
+		<select name="sel" id="sheng">
+			<option value="">请选择省份</option>
+			<option value="江西省">江西省</option>
+			<option value="广东省">广东省</option>
+			<option value="安徽省">安徽省</option>
+		</select>
+		<select name="sel" id="shi">
+			<option value="">请选择城市</option>
+		</select>
+		<select name="sel" id="qu">
+			<option value="">请选择地区</option>
+		</select>
+	</form>
+	<script>
+		window.onload = function(){
+			function getId(id){
+				return document.getElementById(id);
+			}
+			var sheng = getId('sheng');
+			var shi = getId('shi');
+			var qu = getId('qu');
+			var m,n,p,that;
+			var arr=[
+				//省      市          区       三维数组
+	 			"江西省",[
+	 				"南昌市",["东湖区","西湖区"],
+	 				"景德镇",["珠江区","西湖区"]
+	 				],
+				"广东省",[
+					"广州市",["天河区","越秀区"],
+					"深圳市",["罗湖区","宝安区"]
+					],
+				"安徽省",[
+					"合肥市",["政务区","饱和区"],
+					"黄山市",["高新区","庐阳区"]
+					]
+			];
+			console.log(arr)
+			console.log(arr[0]); //省 0  2  4
+			console.log(arr[1][0]); //市 0  2  4
+			console.log(arr[1][1][3]); //区	1  3  5  7
+			// onchenge事件会在域发生变化时触发
+			sheng.onchange = function(){
+				that = this;
+				for(var i=0;i<arr.length;i+=2){
+					if (arr[i]==this.value) {
+						m=i;
+						printShi(m)
+						printQu(m,1)
+					}
+				}
+				shi.onchange = function(){
+					for(var i=0;i<arr.length;i+=2){
+						if (arr[i]==that.value) {
+							n=i;
+							for(var j=0,len=arr[n+1].length;j<len;j+=2)
+								if (arr[n+1][j]==this.value) {
+									p=j;
+									printQu(n,p+1)
+								}
+						}
+					}
+				}
+			}
+			function printShi(x){
+				shi.innerHTML="<option value="+arr[x+1][0]+">"+arr[x+1][0]+"</option>"
+				for(var j=2,len=arr[x+1].length;j<len;j+=2){
+					// 插入option
+					var shioption=document.createElement("option");
+					shioption.setAttribute("value",arr[x+1][j]);
+					shioption.innerHTML=arr[x+1][j];
+					shi.appendChild(shioption);
+				}	
+			}
+
+			function printQu(x,y){
+				qu.innerHTML="<option value="+arr[x+1][y][0]+">"+arr[x+1][y][0]+"</option>"
+				for(var j=1,len=arr[x+1][y].length;j<len;j++){
+					// 插入option
+					var quoption=document.createElement("option");
+					quoption.setAttribute("value",arr[x+1][y][j]);
+					quoption.innerHTML=arr[x+1][y][j];
+					qu.appendChild(quoption);
+				}	
+			}
+		}
+	</script>
+</body>
+</html>
